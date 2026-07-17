@@ -38,7 +38,7 @@ function App() {
 
   return (
     <>
-      <h1>Here are each students and there grades</h1>
+      <h1>Here are each students and their grades</h1>
       <input 
       
       placeholder='Name'
