@@ -15,6 +15,7 @@ function Students({
   students,
   setStudents,
 }: StudentsProps) {
+
   const addStudent = (
     student: Student
   ) => {
@@ -35,6 +36,24 @@ function Students({
     );
   };
 
+  const editStudent = (
+    id: number,
+    newGrade: number
+  ) => {
+
+    setStudents(
+      students.map((student) =>
+        student.id === id
+          ? {
+              ...student,
+              grade: newGrade,
+            }
+          : student
+      )
+    );
+
+  };
+
   return (
     <>
       <h1>Students</h1>
@@ -47,6 +66,9 @@ function Students({
         students={students}
         deleteStudent={
           deleteStudent
+        }
+        editStudent={
+          editStudent
         }
       />
     </>
