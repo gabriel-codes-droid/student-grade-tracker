@@ -1,70 +1,102 @@
-import { useState, useEffect } from 'react'
-import type  { Student } from './student'
-import './App.css'
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Link,
+} from "react-router-dom";
+
+import {
+  useState,
+  useEffect,
+} from "react";
+
+import type { Student } from "./types/Student";
+
+import Home from "./pages/Home";
+import Students from "./pages/Students";
+import Statistics from "./pages/Statistics";
 
 function App() {
-  const [students, setStudents] = useState<Student[]>(() => {
-    const storedStudents = localStorage.getItem('students')
-    return storedStudents ? JSON.parse(storedStudents) : []
-  });
+  const [students, setStudents] =
+    useState<Student[]>(() => {
+      const stored =
+        localStorage.getItem(
+          "students"
+        );
 
-  const [name, setName] = useState('');
-  const [grade, setGrade] = useState('');
+      return stored
+        ? JSON.parse(stored)
+        : [];
+    });
 
   useEffect(() => {
-    localStorage.setItem('students', JSON.stringify(students));
+    localStorage.setItem(
+      "students",
+      JSON.stringify(
+        students
+      )
+    );
   }, [students]);
 
-  const addStudent = () => {
-    if (name.trim() === '' || grade.trim() === '') {
-      alert('Please enter both name and grade.');
-      return;
-    }
-
-    const newStudent: Student = {
-      id: Date.now(),
-      name:name,
-      grade: parseFloat(grade),
-    };
-    setStudents([...students, newStudent]);
-    setName('');
-    setGrade('');
-  };
-  const deleteStudent=(id:Student['id'])=>{
-    setStudents(students=>
-      students.filter(student =>student.id !==id)
-    )
-  }
-
   return (
-    <>
-      <h1>Here are each students and their grades</h1>
-      <input 
-      
-      placeholder='Name'
-      value={name}
-      onChange={(e)=> setName(e.target.value)}
+    <BrowserRouter>
+      <nav>
+        <Link to="/">
+          Home
+        </Link>
 
-      />
+        {" | "}
 
-      <input
+        <Link to="/students">
+          Students
+        </Link>
 
-      placeholder='Grades'
-      value={grade}
-      onChange={(e)=> setGrade(e.target.value)}
-      />
-      <button onClick={addStudent}>Add new Student</button>
+        {" | "}
 
-      <ul>
-        {students.map(student=>(
-          <li key = {student.id}>
-          {student.name} : {student.grade}
-          <button onClick={()=>{deleteStudent(student.id)}}>Delete this student</button>
-          </li>
-        ))}
-      </ul>
-    </>
-  )
+        <Link to="/statistics">
+          Statistics
+        </Link>
+      </nav>
+
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <Home
+              students={
+                students
+              }
+            />
+          }
+        />
+
+        <Route
+          path="/students"
+          element={
+            <Students
+              students={
+                students
+              }
+              setStudents={
+                setStudents
+              }
+            />
+          }
+        />
+
+        <Route
+          path="/statistics"
+          element={
+            <Statistics
+              students={
+                students
+              }
+            />
+          }
+        />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
